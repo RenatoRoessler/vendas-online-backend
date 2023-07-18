@@ -14,13 +14,13 @@ export class CityEntity {
     name: string;
 
     @Column({ name: 'created_at', nullable: false })
-    created_at: Date;
+    createdAt: Date;
 
     @Column({ name: 'updated_at', nullable: false })
-    updated_at: Date;
+    updatedAt: Date;
 
     @OneToMany(() => AddressEntity, address => address.city)
-    addresses: AddressEntity[];
+    addresses?: AddressEntity[];
 
     @ManyToOne(() => stateEntity, state => state.cities)
     @JoinColumn({ name: 'state_id', referencedColumnName: 'id' })
