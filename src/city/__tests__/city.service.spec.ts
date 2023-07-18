@@ -48,6 +48,4 @@ describe('CityService', () => {
         const cuty = await service.getAllCitiesByStateId(cityMock.id);
         expect(cuty).toEqual([cityMock]);
     });
-
-
 });
