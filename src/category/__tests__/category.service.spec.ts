@@ -4,6 +4,7 @@ import { CategoryEntity } from '../entities/category.entity';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { categoryMock } from '../__mocks__/category.mock';
+import { createCategoryMock } from '../__mocks__/create-category.mock';
 
 describe('CategoryService', () => {
   let service: CategoryService;
@@ -14,6 +15,7 @@ describe('CategoryService', () => {
       providers: [CategoryService, {
         provide: getRepositoryToken(CategoryEntity),
         useValue: {
+          findOne: jest.fn().mockResolvedValue(categoryMock),
           find: jest.fn().mockResolvedValue([categoryMock
           ]),
           save: jest.fn().mockResolvedValue(categoryMock),
@@ -43,5 +45,30 @@ describe('CategoryService', () => {
   it('should return error in list category exception', async () => {
     jest.spyOn(categoryRepository, 'find').mockRejectedValue(new Error());
     expect(service.findAllCategories()).rejects.toThrow();
+  });
+
+  it('should return error if exisit category after save', async () => {
+    expect(service.createCategory(createCategoryMock)).rejects.toThrowError();
+  });
+
+  it('should return category after save', async () => {
+    jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(undefined);
+    const categorie = await service.createCategory(createCategoryMock);
+    expect(categorie).toEqual(categoryMock);
+  });
+
+  it('should return erro in exceptions', async () => {
+    jest.spyOn(categoryRepository, 'save').mockRejectedValue(new Error());
+    expect(service.createCategory(createCategoryMock)).rejects.toThrowError();
+  });
+
+  it('should return category in find by name', async () => {
+    const categorie = await service.findCategoryByName(categoryMock.name);
+    expect(categorie).toEqual(categoryMock);
+  });
+
+  it('should return error if category find by name empty', async () => {
+    jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(undefined);
+    expect(service.findCategoryByName(categoryMock.name)).rejects.toThrowError();
   });
 });
