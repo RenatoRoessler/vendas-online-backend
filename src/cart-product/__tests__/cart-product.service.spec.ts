@@ -7,6 +7,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { productMock } from '../../product/__mocks__/product.mock';
 import { returnDeleteMock } from '../../__mocks__/return-delete.mock';
 import { CartMock } from '../../cart/__mocks__/cart.mock';
+import { insertCartMock } from '../../cart/__mocks__/insert-cart.mokc';
+import { cartProductMock } from '../__mocks__/cart-product.mock';
+import { NotFoundException } from '@nestjs/common';
 
 describe('CartProductService', () => {
   let service: CartProductService;
@@ -24,8 +27,8 @@ describe('CartProductService', () => {
         }, {
           provide: getRepositoryToken(CartProductEntity),
           useValue: {
-            findONe: jest.fn(),
-            save: jest.fn(),
+            findOne: jest.fn().mockResolvedValue(cartProductMock),
+            save: jest.fn().mockResolvedValue(cartProductMock),
             delete: jest.fn().mockResolvedValue(returnDeleteMock),
           }
         }, CartProductService],
@@ -50,5 +53,30 @@ describe('CartProductService', () => {
   it('should return error in exception delete', async () => {
     jest.spyOn(cartProductRepository, 'delete').mockRejectedValue(new Error());
     expect(service.deleteProductInCart(productMock.id, CartMock.id)).rejects.toThrowError();
+  });
+
+  it('should return cartProduct after create', async () => {
+    const productCart = await service.createProductInCart(insertCartMock, CartMock.id);
+    expect(productCart).toEqual(cartProductMock)
+  });
+
+  it('should return error in exception save', async () => {
+    jest.spyOn(cartProductRepository, 'save').mockRejectedValue(new Error());
+    expect(service.createProductInCart(insertCartMock, CartMock.id)).rejects.toThrowError();
+  });
+
+  it('should return cartProduct if exists', async () => {
+    const productCart = await service.verifyProductInCart(productMock.id, CartMock.id);
+    expect(productCart).toEqual(cartProductMock)
+  });
+
+  it('should return error if not found', async () => {
+    jest.spyOn(cartProductRepository, 'findOne').mockResolvedValue(undefined);
+    expect(service.verifyProductInCart(productMock.id, CartMock.id)).rejects.toThrowError(NotFoundException);
+  });
+
+  it('should return error in exception verifyProductInCart', async () => {
+    jest.spyOn(cartProductRepository, 'findOne').mockRejectedValue(new Error());
+    expect(service.verifyProductInCart(productMock.id, CartMock.id)).rejects.toThrowError(Error);
   });
 });
