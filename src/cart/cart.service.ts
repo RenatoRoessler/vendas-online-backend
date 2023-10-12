@@ -5,6 +5,7 @@ import { CartProductService } from '../cart-product/cart-product.service';
 import { InsertCartDTO } from './dtos/insert-cart.dto';
 import { ReturnCartDTO } from './dtos/return-cart.dto';
 import { CartEntity } from './entities/cart.entity';
+import { UpdateCartDTO } from './dtos/update-cart.dto';
 
 const LINE_AFFECTED = 1;
 
@@ -58,6 +59,17 @@ export class CartService {
     async insertProductInCart(insertCartDTO: InsertCartDTO, userId: number): Promise<ReturnCartDTO> {
         const cart = await this.findCartByUserId(userId).catch(async () => this.createCart(userId));
         await this.cartProductService.insertProductInCart(insertCartDTO, cart);
+        return cart;
+    }
+
+    async deleteProductInCart(productId: number, userId: number): Promise<DeleteResult> {
+        const cart = await this.findCartByUserId(userId);
+        return this.cartProductService.deleteProductInCart(productId, cart.id);
+    }
+
+    async updateProductInCart(updateCartDTO: UpdateCartDTO, userId: number): Promise<CartEntity> {
+        const cart = await this.findCartByUserId(userId);
+        await this.cartProductService.updateProductInCart(updateCartDTO, cart);
         return cart;
     }
 }
