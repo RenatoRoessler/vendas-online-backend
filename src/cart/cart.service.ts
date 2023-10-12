@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CartEntity } from './entities/cart.entity';
-import { Repository } from 'typeorm';
-import { InsertCartDTO } from './dtos/insert-cart.dto';
+import { DeleteResult, Repository } from 'typeorm';
 import { CartProductService } from '../cart-product/cart-product.service';
+import { InsertCartDTO } from './dtos/insert-cart.dto';
 import { ReturnCartDTO } from './dtos/return-cart.dto';
+import { CartEntity } from './entities/cart.entity';
+
+const LINE_AFFECTED = 1;
 
 @Injectable()
 export class CartService {
@@ -14,6 +16,18 @@ export class CartService {
         private readonly cartRepository: Repository<CartEntity>,
         private readonly cartProductService: CartProductService
     ) { }
+
+    async clearCart(userId: number): Promise<DeleteResult> {
+        const cart = await this.findCartByUserId(userId);
+        await this.cartRepository.save({
+            ...cart,
+            active: false
+        })
+        return {
+            raw: [],
+            affected: LINE_AFFECTED
+        }
+    }
 
     async findCartByUserId(userId: number, isRelations?: boolean): Promise<CartEntity> {
         const relations = isRelations ? {
@@ -29,7 +43,7 @@ export class CartService {
             relations
         });
         if (!cart) {
-            throw new Error('No active cart found');
+            throw new NotFoundException('No active cart found');
         }
         return cart;
     };
@@ -44,6 +58,6 @@ export class CartService {
     async insertProductInCart(insertCartDTO: InsertCartDTO, userId: number): Promise<ReturnCartDTO> {
         const cart = await this.findCartByUserId(userId).catch(async () => this.createCart(userId));
         await this.cartProductService.insertProductInCart(insertCartDTO, cart);
-        return new ReturnCartDTO(await this.findCartByUserId(userId, true));
+        return cart;
     }
 }
