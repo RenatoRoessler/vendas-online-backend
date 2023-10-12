@@ -1,7 +1,7 @@
 import { DeleteResult } from "typeorm"
 
 
-export const returnDelete: DeleteResult = {
+export const returnDeleteMock: DeleteResult = {
     "raw": [],
     "affected": 1
 }
