@@ -1,8 +1,10 @@
-import { Controller, Post, Body, Get, Param, ValidationPipe, UsePipes } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, ValidationPipe, UsePipes, Patch } from '@nestjs/common';
 import { CreateUserDto } from './dtos/createUser.dtos';
 import { UserService } from './user.service';
 import { UserEntity } from './entities/user.entity';
 import { ReturnUserDto } from './dtos/returnUser.dto';
+import { UpdatePasswordDTO } from './dtos/update-passsword.dto';
+import { UserId } from 'src/decorators/user-id.decorator';
 
 @Controller('user')
 export class UserController {
@@ -23,5 +25,11 @@ export class UserController {
   @Get('/:userId')
   async getUserById(@Param('userId') userId: number): Promise<ReturnUserDto> {
     return new ReturnUserDto(await this.userService.getUserByIdUsingRelations(userId));
+  }
+
+  @Patch('')
+  @UsePipes(ValidationPipe)
+  async updatePasswordUser(@UserId() userId: number, @Body() updatePasswordDTO: UpdatePasswordDTO): Promise<UserEntity> {
+    return this.userService.updatePasswordUser(updatePasswordDTO, userId);
   }
 }

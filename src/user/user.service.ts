@@ -1,10 +1,12 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dtos/createUser.dtos';
 import { UserEntity } from './entities/user.entity';
-import { hash } from 'bcrypt';
+
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserType } from './enum/user-type.enum';
+import { UpdatePasswordDTO } from './dtos/update-passsword.dto';
+import { createPasswordHashed, validatePassword } from 'src/utils/password';
 
 
 @Injectable()
@@ -14,15 +16,15 @@ export class UserService {
         @InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>,
     ) { }
 
+
+
     async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
         const user = await this.findUserByEmail(createUserDto.email).catch(() => undefined);
-        if(user) {
+        if (user) {
             throw new BadRequestException('emial registered in system');
         }
 
-        const saltOrRounds = 10;
-
-        const passwordHash = await hash(createUserDto.password, saltOrRounds);
+        const passwordHash = await createPasswordHashed(createUserDto.password);
 
         return this.userRepository.save({
             ...createUserDto,
@@ -57,7 +59,7 @@ export class UserService {
             }
         })
 
-        if(!user) {
+        if (!user) {
             throw new NotFoundException('User not found');
         }
 
@@ -71,10 +73,22 @@ export class UserService {
             }
         })
 
-        if(!user) {
+        if (!user) {
             throw new NotFoundException(`User with email ${email} not found`);
         }
 
         return user;
+    }
+
+    async updatePasswordUser(updatePasswordUser: UpdatePasswordDTO, userId: number): Promise<UserEntity> {
+        const user = await this.findUserById(userId);
+        const passwordHash = await createPasswordHashed(updatePasswordUser.newPassword);
+
+        const isMatch = await validatePassword(updatePasswordUser.lastPassword, user.password || '');
+
+        if (!isMatch) {
+            throw new BadRequestException('Last password invalid');
+        }
+        return this.userRepository.save({ ...user, password: passwordHash })
     }
 }
