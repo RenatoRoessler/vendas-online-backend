@@ -4,6 +4,7 @@ import { CartEntity } from './entities/cart.entity';
 import { Repository } from 'typeorm';
 import { InsertCartDTO } from './dtos/insert-cart.dto';
 import { CartProductService } from '../cart-product/cart-product.service';
+import { ReturnCartDTO } from './dtos/return-cart.dto';
 
 @Injectable()
 export class CartService {
@@ -14,12 +15,18 @@ export class CartService {
         private readonly cartProductService: CartProductService
     ) { }
 
-    async verifyActiveCart(userId: number): Promise<CartEntity> {
+    async findCartByUserId(userId: number, isRelations?: boolean): Promise<CartEntity> {
+        const relations = isRelations ? {
+            cartProduct: {
+                product: true
+            }
+        } : undefined
         const cart = await this.cartRepository.findOne({
             where: {
                 userId,
                 active: true
-            }
+            },
+            relations
         });
         if (!cart) {
             throw new Error('No active cart found');
@@ -34,21 +41,9 @@ export class CartService {
         });
     }
 
-    async insertProductInCart(insertCartDTO: InsertCartDTO, userId: number): Promise<CartEntity> {
-        const cart = await this.verifyActiveCart(userId).catch(async () => this.createCart(userId));
+    async insertProductInCart(insertCartDTO: InsertCartDTO, userId: number): Promise<ReturnCartDTO> {
+        const cart = await this.findCartByUserId(userId).catch(async () => this.createCart(userId));
         await this.cartProductService.insertProductInCart(insertCartDTO, cart);
-        return cart;
-
-
-        // return await this.cartRepository.save({
-        //     ...cart,
-        //     cartProduct: [
-        //         {
-        //             productId: insertCart.productId,
-        //             amount: insertCart.amount
-        //         }
-        //     ]
-        // });
-
+        return new ReturnCartDTO(await this.findCartByUserId(userId, true));
     }
 }
