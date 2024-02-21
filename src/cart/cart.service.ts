@@ -68,7 +68,7 @@ export class CartService {
     }
 
     async updateProductInCart(updateCartDTO: UpdateCartDTO, userId: number): Promise<CartEntity> {
-        const cart = await this.findCartByUserId(userId);
+        const cart = await this.findCartByUserId(userId).catch(async () => { return this.createCart(userId) });
         await this.cartProductService.updateProductInCart(updateCartDTO, cart);
         return cart;
     }
