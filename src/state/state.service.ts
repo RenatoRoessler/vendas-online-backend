@@ -5,13 +5,13 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class StateService {
-    
+
     constructor(
         @InjectRepository(stateEntity)
         private readonly stateRepository: Repository<stateEntity>,
-    ) {}
+    ) { }
 
-    async getAllStates(): Promise<stateEntity[]> {
+    async getAllState(): Promise<stateEntity[]> {
         return await this.stateRepository.find();
     }
 }

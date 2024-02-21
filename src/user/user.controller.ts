@@ -21,8 +21,8 @@ export class UserController {
 
   @Roles(UserType.Admin)
   @Get()
-  async getAllUsers(): Promise<ReturnUserDto[]> {
-    return ((await this.userService.getAllUsers()).map(user => new ReturnUserDto(user)));
+  async getAllUser(): Promise<ReturnUserDto[]> {
+    return ((await this.userService.getAllUser()).map(user => new ReturnUserDto(user)));
   }
 
   @Roles(UserType.Admin)

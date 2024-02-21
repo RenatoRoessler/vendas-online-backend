@@ -20,7 +20,7 @@ export class CategoryController {
     @Roles(UserType.Admin)
     @UsePipes(ValidationPipe)
     @Post()
-    async createCategoty(@Body() createCategory: CreateCategory): Promise<CategoryEntity> {
+    async createCategory(@Body() createCategory: CreateCategory): Promise<CategoryEntity> {
         return await this.categoryService.createCategory(createCategory);
     }
 
