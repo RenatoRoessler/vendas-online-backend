@@ -5,7 +5,7 @@ import { ReturnUserDto } from '../user/dtos/returnUser.dto';
 import { UserEntity } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
 import { ReturnLogin } from './dtos/ReturnLogin.dto';
-import { LoginDto } from './dtos/login.dtos';
+import { LoginDto } from './dtos/login.dto';
 import { LoginPayload } from './dtos/loginPayload.dto';
 
 @Injectable()

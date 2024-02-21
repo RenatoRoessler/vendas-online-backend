@@ -4,7 +4,7 @@ import { UserType } from '../user/enum/user-type.enum';
 import { ReturnProduct } from './dtos/return-product.dto';
 import { ProductService } from './product.service';
 import { ProductEntity } from './entities/product.entity';
-import { createProductDTO } from './dtos/create-product.dtos';
+import { createProductDTO } from './dtos/create-product.dto';
 import { DeleteResult } from 'typeorm';
 import { updateProductDto } from './dtos/update-product.dto';
 
