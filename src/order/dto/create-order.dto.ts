@@ -4,7 +4,7 @@ export class CreateOrderDTO {
 
     @IsOptional()
     @IsNumber()
-    amountPayaments?: string;
+    amountPayments?: number;
 
     @IsOptional()
     @IsString()
@@ -12,5 +12,5 @@ export class CreateOrderDTO {
 
     @IsOptional()
     @IsString()
-    datePayaments: string;
+    datePayment: string;
 }
