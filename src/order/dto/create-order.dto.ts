@@ -11,9 +11,9 @@ export class CreateOrderDTO {
 
     @IsOptional()
     @IsString()
-    codePix: string;
+    codePix?: string;
 
     @IsOptional()
     @IsString()
-    datePayment: string;
+    datePayment?: string;
 }
