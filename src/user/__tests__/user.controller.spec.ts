@@ -77,6 +77,7 @@ describe('UserController', () => {
             cpf: UserEntityMock.cpf,
         });
     });
+
     it('should return ReturnUserEntity in getInfoUser', async () => {
         const user = await controller.getInfoUser(UserEntityMock.id);
 
