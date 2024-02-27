@@ -13,7 +13,7 @@ export class OrderController {
 
     @Post()
     @UsePipes(ValidationPipe)
-    async createOrder(@Body() createOrderDTO: CreateOrderDTO, @UserId() userId: number) {
+    async createOrder(@Body() createOrderDTO: CreateOrderDTO, @UserId() userId: number): Promise<OrderEntity> {
         return this.orderService.createOrder(createOrderDTO, userId);
     }
 
