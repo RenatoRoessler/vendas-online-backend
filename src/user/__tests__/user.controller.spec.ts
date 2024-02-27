@@ -4,6 +4,7 @@ import { createUserMock } from '../__mocks__/createUser.mock';
 import { UserEntityMock } from '../__mocks__/user.mock';
 import { UserController } from '../user.controller';
 import { UserService } from '../user.service';
+import { ReturnUserDto } from '../dtos/returnUser.dto';
 
 
 describe('UserController', () => {
@@ -75,6 +76,11 @@ describe('UserController', () => {
             phone: UserEntityMock.phone,
             cpf: UserEntityMock.cpf,
         });
+    });
+    it('should return ReturnUserEntity in getInfoUser', async () => {
+        const user = await controller.getInfoUser(UserEntityMock.id);
+
+        expect(user).toEqual(new ReturnUserDto(UserEntityMock));
     });
 
     //   it('should return UserEntity in updatePasswordUser', async () => {

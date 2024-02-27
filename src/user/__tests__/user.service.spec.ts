@@ -88,4 +88,6 @@ describe('UserService', () => {
     jest.spyOn(userRepository, 'findOne').mockRejectedValue(undefined);
     expect(service.updatePasswordUser(updatePasswordMock, UserEntityMock.id)).rejects.toThrowError();
   });
+
+
 });
