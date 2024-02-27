@@ -1,11 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductService } from 'src/product/product.service';
+import { ProductService } from '../product/product.service';
 import { Repository } from 'typeorm';
 import { CreateCategory } from './dtos/create-category.dto';
 import { ReturnCategory } from './dtos/return-category.dto';
 import { CategoryEntity } from './entities/category.entity';
-import { CountProduct } from 'src/product/dtos/count-product.dto';
+import { CountProduct } from '../product/dtos/count-product.dto';
 
 @Injectable()
 export class CategoryService {
@@ -13,6 +13,7 @@ export class CategoryService {
     constructor(
         @InjectRepository(CategoryEntity)
         private readonly categoryRepository: Repository<CategoryEntity>,
+        @Inject(forwardRef(() => ProductService))
         private readonly productService: ProductService,
     ) { }
 
@@ -27,7 +28,7 @@ export class CategoryService {
             throw new NotFoundException('Categories not found');
         }
 
-        const count = await this.productService.countProductsByCategoryId();
+        const count = await this.productService.countProdutsByCategoryId();
 
         return categories.map(category => new ReturnCategory(category, this.findAmountCategoryINProducts(category, count)));
     }

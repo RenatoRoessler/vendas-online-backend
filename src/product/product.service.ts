@@ -70,7 +70,7 @@ export class ProductService {
         return this.productRepository.save({ ...product, ...updateProduct });
     }
 
-    async countProductsByCategoryId(): Promise<CountProduct[]> {
+    async countProdutsByCategoryId(): Promise<CountProduct[]> {
         return this.productRepository.createQueryBuilder('product')
             .select('product.categoryId, COUNT(*) as total')
             .groupBy('product.categoryId')
