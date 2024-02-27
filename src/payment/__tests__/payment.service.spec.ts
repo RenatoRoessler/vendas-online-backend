@@ -107,38 +107,38 @@ describe('PaymentService', () => {
     expect(savePayment.finalPrice).toEqual(0);
   });
 
-  // it('should return final price send cartProduct', async () => {
-  //   const spy = jest.spyOn(paymentRepository, 'save');
-  //   await service.createPayment(createOrderCreditCardMock, [productMock], {
-  //     ...CartMock,
-  //     cartProduct: [cartProductMock],
-  //   });
+  it('should return final price send cartProduct', async () => {
+    const spy = jest.spyOn(paymentRepository, 'save');
+    await service.createPayment(createOrderCreditCardMock, [productMock], {
+      ...CartMock,
+      cartProduct: [cartProductMock],
+    });
 
-  //   const savePayment: PaymentCreditCardEntity = spy.mock
-  //     .calls[0][0] as PaymentCreditCardEntity;
+    const savePayment: PaymentCreditCardEntity = spy.mock
+      .calls[0][0] as PaymentCreditCardEntity;
 
-  //   expect(savePayment.finalPrice).toEqual(186420.5);
-  // });
+    expect(savePayment.finalPrice).toEqual(500);
+  });
 
-  // it('should return all data in save payment', async () => {
-  //   const spy = jest.spyOn(paymentRepository, 'save');
-  //   await service.createPayment(createOrderCreditCardMock, [productMock], {
-  //     ...CartMock,
-  //     cartProduct: [cartProductMock],
-  //   });
+  it('should return all data in save payment', async () => {
+    const spy = jest.spyOn(paymentRepository, 'save');
+    await service.createPayment(createOrderCreditCardMock, [productMock], {
+      ...CartMock,
+      cartProduct: [cartProductMock],
+    });
 
-  //   const savePayment: PaymentCreditCardEntity = spy.mock
-  //     .calls[0][0] as PaymentCreditCardEntity;
+    const savePayment: PaymentCreditCardEntity = spy.mock
+      .calls[0][0] as PaymentCreditCardEntity;
 
-  //   const paymentCreditCard: PaymentCreditCardEntity =
-  //     new PaymentCreditCardEntity(
-  //       PaymentType.Done,
-  //       186420.5,
-  //       0,
-  //       186420.5,
-  //       createOrderCreditCardMock,
-  //     );
+    const paymentCreditCard: PaymentCreditCardEntity =
+      new PaymentCreditCardEntity(
+        PaymentType.Done,
+        500,
+        0,
+        500,
+        createOrderCreditCardMock,
+      );
 
-  //   expect(savePayment).toEqual(paymentCreditCard);
-  // });
+    expect(savePayment).toEqual(paymentCreditCard);
+  });
 });
