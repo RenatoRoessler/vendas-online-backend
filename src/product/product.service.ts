@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, forwardRef, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from './entities/product.entity';
 import { DeleteResult, In, Repository } from 'typeorm';
 import { createProductDTO } from './dtos/create-product.dto';
 import { CategoryService } from '../category/category.service';
+import { CountProduct } from './dtos/count-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -11,15 +12,25 @@ export class ProductService {
     constructor(
         @InjectRepository(ProductEntity)
         private readonly productRepository: Repository<ProductEntity>,
+        @Inject(forwardRef(() => CategoryService))
         private readonly categoryService: CategoryService,
     ) { }
 
-    async findAll(productId?: number[]): Promise<ProductEntity[]> {
+    async findAll(productId?: number[], isFindRelations?: boolean): Promise<ProductEntity[]> {
         let findOptions = {};
         if (productId && productId.length > 0) {
             findOptions = {
                 where: {
                     id: In(productId)
+                }
+            }
+        }
+
+        if (isFindRelations) {
+            findOptions = {
+                ...findOptions,
+                relations: {
+                    category: true
                 }
             }
         }
@@ -57,5 +68,12 @@ export class ProductService {
     async updateProduct(updateProduct: createProductDTO, productId: number): Promise<ProductEntity> {
         const product = await this.findProductById(productId);
         return this.productRepository.save({ ...product, ...updateProduct });
+    }
+
+    async countProductsByCategoryId(): Promise<CountProduct[]> {
+        return this.productRepository.createQueryBuilder('product')
+            .select('product.categoryId, COUNT(*) as total')
+            .groupBy('product.categoryId')
+            .getRawMany();
     }
 }
