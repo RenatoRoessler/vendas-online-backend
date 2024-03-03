@@ -4,6 +4,8 @@ import { CategoryController } from '../category.controller';
 import { CategoryService } from '../category.service';
 import { categoryMock } from '../__mocks__/category.mock';
 import { createCategoryMock } from '../__mocks__/create-category.mock';
+import { updateCategoryMock } from '../__mocks__/update-category.mock';
+
 
 describe('CategoryController', () => {
     let controller: CategoryController;
@@ -47,50 +49,50 @@ describe('CategoryController', () => {
         expect(category).toEqual(categoryMock);
     });
 
-    //   it('should return DeleteResult in delete category', async () => {
-    //     const category = await controller.deleteCategory(categoryMock.id);
+    it('should return DeleteResult in delete category', async () => {
+        const category = await controller.deleteCategory(categoryMock.id);
 
-    //     expect(category).toEqual(returnDeleteMock);
-    //   });
+        expect(category).toEqual(returnDeleteMock);
+    });
 
-    //   it('should send category id to delete category', async () => {
-    //     const spy = jest.spyOn(categoryService, 'deleteCategory');
-    //     await controller.deleteCategory(categoryMock.id);
+    it('should send category id to delete category', async () => {
+        const spy = jest.spyOn(categoryService, 'deleteCategory');
+        await controller.deleteCategory(categoryMock.id);
 
-    //     expect(spy.mock.calls[0][0]).toEqual(categoryMock.id);
-    //   });
+        expect(spy.mock.calls[0][0]).toEqual(categoryMock.id);
+    });
 
-    //   it('should return category in update category', async () => {
-    //     const category = await controller.editCategory(
-    //       categoryMock.id,
-    //       updateCategoryMock,
-    //     );
+    it('should return category in update category', async () => {
+        const category = await controller.editCategory(
+            categoryMock.id,
+            updateCategoryMock,
+        );
 
-    //     expect(category).toEqual(categoryMock);
-    //   });
+        expect(category).toEqual(categoryMock);
+    });
 
-    //   it('should send category id and body', async () => {
-    //     const spy = jest.spyOn(categoryService, 'editCategory');
-    //     await controller.editCategory(categoryMock.id, updateCategoryMock);
+    it('should send category id and body', async () => {
+        const spy = jest.spyOn(categoryService, 'editCategory');
+        await controller.editCategory(categoryMock.id, updateCategoryMock);
 
-    //     expect(spy.mock.calls[0][0]).toEqual(categoryMock.id);
-    //     expect(spy.mock.calls[0][1]).toEqual(updateCategoryMock);
-    //   });
+        expect(spy.mock.calls[0][0]).toEqual(categoryMock.id);
+        expect(spy.mock.calls[0][1]).toEqual(updateCategoryMock);
+    });
 
-    //   it('should return category in find category by id', async () => {
-    //     const category = await controller.findCategoryById(categoryMock.id);
+    it('should return category in find category by id', async () => {
+        const category = await controller.findCategoryById(categoryMock.id);
 
-    //     expect(category).toEqual({
-    //       id: categoryMock.id,
-    //       name: categoryMock.name,
-    //     });
-    //   });
+        expect(category).toEqual({
+            id: categoryMock.id,
+            name: categoryMock.name,
+        });
+    });
 
-    //   it('should send id and true relations to findCategoryById', async () => {
-    //     const spy = jest.spyOn(categoryService, 'findCategoryById');
-    //     await controller.findCategoryById(categoryMock.id);
+    it('should send id and true relations to findCategoryById', async () => {
+        const spy = jest.spyOn(categoryService, 'findCategoryById');
+        await controller.findCategoryById(categoryMock.id);
 
-    //     expect(spy.mock.calls[0][0]).toEqual(categoryMock.id);
-    //     expect(spy.mock.calls[0][1]).toEqual(true);
-    //   });
+        expect(spy.mock.calls[0][0]).toEqual(categoryMock.id);
+        expect(spy.mock.calls[0][1]).toEqual(true);
+    });
 });

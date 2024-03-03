@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-
-import { createUserMock } from '../__mocks__/createUser.mock';
-import { UserEntityMock } from '../__mocks__/user.mock';
+import { ReturnUserDto } from '../dtos/returnUser.dto';
+import { UserType } from '../enum/user-type.enum';
 import { UserController } from '../user.controller';
 import { UserService } from '../user.service';
-import { ReturnUserDto } from '../dtos/returnUser.dto';
-
+import { createUserMock } from '../__mocks__/createUser.mock';
+import { UserEntityMock } from '../__mocks__/user.mock';
+import { updatePasswordMock } from '../__mocks__/update-user-mock';
 
 describe('UserController', () => {
     let controller: UserController;
@@ -44,13 +44,13 @@ describe('UserController', () => {
         expect(user).toEqual(UserEntityMock);
     });
 
-    //   it('should return user Entity in createUser', async () => {
-    //     const spy = jest.spyOn(userService, 'createUser');
-    //     const user = await controller.createAdmin(createUserMock);
+    it('should return user Entity in createUser', async () => {
+        const spy = jest.spyOn(userService, 'createUser');
+        const user = await controller.createAdmin(createUserMock);
 
-    //     expect(user).toEqual(UserEntityMock);
-    //     expect(spy.mock.calls[0][1]).toEqual(UserType.Admin);
-    //   });
+        expect(user).toEqual(UserEntityMock);
+        expect(spy.mock.calls[0][1]).toEqual(UserType.Admin);
+    });
 
     it('should return ReturnUser in getAllUser', async () => {
         const users = await controller.getAllUser();
@@ -78,24 +78,18 @@ describe('UserController', () => {
         });
     });
 
+    it('should return UserEntity in updatePasswordUser', async () => {
+        const user = await controller.updatePasswordUser(
+            UserEntityMock.id,
+            updatePasswordMock
+        );
+
+        expect(user).toEqual(UserEntityMock);
+    });
+
     it('should return ReturnUserEntity in getInfoUser', async () => {
         const user = await controller.getInfoUser(UserEntityMock.id);
 
         expect(user).toEqual(new ReturnUserDto(UserEntityMock));
     });
-
-    //   it('should return UserEntity in updatePasswordUser', async () => {
-    //     const user = await controller.updatePasswordUser(
-    //       updatePasswordMock,
-    //       UserEntityMock.id,
-    //     );
-
-    //     expect(user).toEqual(UserEntityMock);
-    //   });
-
-    //   it('should return ReturnUserEntity in getInfoUser', async () => {
-    //     const user = await controller.getInfoUser(UserEntityMock.id);
-
-    //     expect(user).toEqual(new ReturnUserDto(UserEntityMock));
-    //   });
 });

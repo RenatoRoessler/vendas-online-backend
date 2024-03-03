@@ -1,4 +1,4 @@
-import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { CACHE_MANAGER } from '@nestjs/common';
 import { Test, TestingModule } from "@nestjs/testing";
 import { CacheService } from "../cache.service";
 import { UserEntityMock } from "../../user/__mocks__/user.mock";
@@ -26,13 +26,13 @@ describe('cacheService', () => {
         expect(service).toBeDefined();
     });
 
-    it('should return data in cache', async() => {
+    it('should return data in cache', async () => {
         const user = await service.getCache('key', () => null);
         expect(user).toEqual(UserEntityMock);
     });
 
-    it('should return data in function', async() => {
-        const result = { name: 'test'}
+    it('should return data in function', async () => {
+        const result = { name: 'test' }
         jest.spyOn(cacheManager, 'get').mockResolvedValue(undefined);
         const unser = await service.getCache('key', () => Promise.resolve(result));
         expect(unser).toEqual(result);

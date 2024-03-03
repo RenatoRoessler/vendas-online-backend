@@ -9,6 +9,9 @@ export class stateEntity {
     @Column({ name: 'name', nullable: false })
     name: string;
 
+    @Column({ name: 'uf', nullable: false })
+    uf: string;
+
     @Column({ name: 'created_at', nullable: false })
     createdAt: Date;
 

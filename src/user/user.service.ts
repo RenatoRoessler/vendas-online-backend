@@ -16,9 +16,7 @@ export class UserService {
         @InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>,
     ) { }
 
-
-
-    async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
+    async createUser(createUserDto: CreateUserDto, userType?: number): Promise<UserEntity> {
         const user = await this.findUserByEmail(createUserDto.email).catch(() => undefined);
         if (user) {
             throw new BadRequestException('emial registered in system');
@@ -28,7 +26,7 @@ export class UserService {
 
         return this.userRepository.save({
             ...createUserDto,
-            typeUser: UserType.User,
+            typeUser: userType ? userType : UserType.User,
             password: passwordHash,
         });
     }

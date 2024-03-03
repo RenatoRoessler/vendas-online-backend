@@ -1,14 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { returnDeleteMock } from '../../__mocks__/return-delete.mock';
-
 import { ProductService } from '../../product/product.service';
+import { Repository } from 'typeorm';
+import { CategoryService } from '../category.service';
+import { CategoryEntity } from '../entities/category.entity';
 import { categoryMock } from '../__mocks__/category.mock';
 import { createCategoryMock } from '../__mocks__/create-category.mock';
-import { CategoryService } from '../category.service';
 import { ReturnCategory } from '../dtos/return-category.dto';
-import { CategoryEntity } from '../entities/category.entity';
+import { returnDeleteMock } from '../../__mocks__/return-delete.mock';
+import { productMock } from '../../product/__mocks__/product.mock';
+import { BadRequestException } from '@nestjs/common';
+import { updateCategoryMock } from '../__mocks__/update-category.mock';
 import { countProductMock } from '../../product/__mocks__/countProductMock ';
 
 describe('CategoryService', () => {
@@ -117,25 +119,25 @@ describe('CategoryService', () => {
     expect(service.findCategoryById(categoryMock.id)).rejects.toThrowError();
   });
 
-  // it('should return delete result in success', async () => {
-  //   const deleteResult = await service.deleteCategory(categoryMock.id);
+  it('should return delete result in success', async () => {
+    const deleteResult = await service.deleteCategory(categoryMock.id);
 
-  //   expect(deleteResult).toEqual(returnDeleteMock);
-  // });
+    expect(deleteResult).toEqual(returnDeleteMock);
+  });
 
-  // it('should send relations in request findOne', async () => {
-  //   const spy = jest.spyOn(categoryRepository, 'findOne');
-  //   await service.deleteCategory(categoryMock.id);
+  it('should send relations in request findOne', async () => {
+    const spy = jest.spyOn(categoryRepository, 'findOne');
+    await service.deleteCategory(categoryMock.id);
 
-  //   expect(spy.mock.calls[0][0]).toEqual({
-  //     where: {
-  //       id: categoryMock.id,
-  //     },
-  //     relations: {
-  //       products: true,
-  //     },
-  //   });
-  // });
+    expect(spy.mock.calls[0][0]).toEqual({
+      where: {
+        id: categoryMock.id,
+      },
+      relations: {
+        products: true,
+      },
+    });
+  });
 
   // it('should return error if category with relations', async () => {
   //   jest.spyOn(categoryRepository, 'findOne').mockResolvedValue({
@@ -148,24 +150,24 @@ describe('CategoryService', () => {
   //   );
   // });
 
-  // it('should return category in update category', async () => {
-  //   const spy = jest.spyOn(categoryRepository, 'findOne');
-  //   const category = await service.editCategory(
-  //     categoryMock.id,
-  //     updateCategoryMock,
-  //   );
+  it('should return category in update category', async () => {
+    const spy = jest.spyOn(categoryRepository, 'findOne');
+    const category = await service.editCategory(
+      categoryMock.id,
+      updateCategoryMock,
+    );
 
-  //   expect(category).toEqual(categoryMock);
-  //   expect(spy.mock.calls.length > 0).toEqual(true);
-  // });
+    expect(category).toEqual(categoryMock);
+    expect(spy.mock.calls.length > 0).toEqual(true);
+  });
 
-  // it('should send new category to save', async () => {
-  //   const spy = jest.spyOn(categoryRepository, 'save');
-  //   await service.editCategory(categoryMock.id, updateCategoryMock);
+  it('should send new category to save', async () => {
+    const spy = jest.spyOn(categoryRepository, 'save');
+    await service.editCategory(categoryMock.id, updateCategoryMock);
 
-  //   expect(spy.mock.calls[0][0]).toEqual({
-  //     ...categoryMock,
-  //     ...updateCategoryMock,
-  //   });
-  // });
+    expect(spy.mock.calls[0][0]).toEqual({
+      ...categoryMock,
+      ...updateCategoryMock,
+    });
+  });
 });
